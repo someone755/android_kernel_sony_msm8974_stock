@@ -364,8 +364,8 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		if (max_minfree < lowmem_minfree[i])
 			max_minfree = lowmem_minfree[i];
 #endif
-		if (other_free < lowmem_minfree[i] &&
-		    other_file < lowmem_minfree[i]) {
+		minfree = lowmem_minfree[i];
+		if (other_free < minfree && other_file < minfree) {
 			min_score_adj = lowmem_adj[i];
 			break;
 		}
@@ -444,13 +444,22 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		selected = p;
 		selected_tasksize = tasksize;
 		selected_oom_score_adj = oom_score_adj;
-		lowmem_print(2, "select %d (%s), adj %d, size %d, to kill\n",
-			     p->pid, p->comm, oom_score_adj, tasksize);
+		lowmem_print(2, "select '%s' (%d), adj %hd, size %d, to kill\n",
+				p->comm, p->pid, oom_score_adj, tasksize);
 	}
 	if (selected) {
-		lowmem_print(1, "send sigkill to %d (%s), adj %d, size %d\n",
-			     selected->pid, selected->comm,
-			     selected_oom_score_adj, selected_tasksize);
+			lowmem_print(1, "Killing '%s' (%d), adj %hd,\n" \
+					"   to free %ldkB on behalf of '%s' (%d) because\n" \
+					"   cache %ldkB is below limit %ldkB for oom_score_adj %hd\n"
+					"   Free memory is %ldkB above reserved\n",
+				selected->comm, selected->pid,
+				selected_oom_score_adj,
+				selected_tasksize * (long)(PAGE_SIZE / 1024),
+				current->comm, current->pid,
+				other_file * (long)(PAGE_SIZE / 1024),
+				minfree * (long)(PAGE_SIZE / 1024),
+				min_score_adj,
+				other_free * (long)(PAGE_SIZE / 1024));
 		lowmem_deathpending_timeout = jiffies + HZ;
 #ifdef LMK_COUNT_INFO
 		lmk_count = (uint32_t)(lmk_count+1);
