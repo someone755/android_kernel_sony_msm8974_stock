@@ -578,7 +578,7 @@ _kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
 			struct kgsl_pagetable *pagetable,
 			size_t size)
 {
-	int order, ret = 0;
+	int ret = 0;
 	int len, sglen_alloc, sglen = 0;
 	void *ptr;
 	unsigned int align;
