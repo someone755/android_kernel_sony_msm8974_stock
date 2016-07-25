@@ -574,3 +574,8 @@ CONFIG_HAS_MACH_MEMUTILS=y
 CONFIG_IKCONFIG_PROC=y
 CONFIG_POWERSUSPEND=y
 CONFIG_CPU_VOLTAGE_TABLE=y
+# BCM has to be fixed
+# CONFIG_BCMDHD=m
+# CONFIG_BCM4354=y
+# CONFIG_BCMDHD_FW_PATH="/system/etc/firmware/wlan/bcmdhd/fw_bcmdhd.bin"
+# CONFIG_BCMDHD_NVRAM_PATH="/system/etc/firmware/wlan/bcmdhd/bcmdhd.cal"
