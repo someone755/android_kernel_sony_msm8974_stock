@@ -24,6 +24,8 @@
 #define MMC_QUEUE_BOUNCESZ	65536
 
 
+#define MMC_REQ_SPECIAL_MASK	(REQ_DISCARD | REQ_FLUSH)
+
 /*
  * Based on benchmark tests the default num of requests to trigger the write
  * packing was determined, to keep the read latency as low as possible and
@@ -82,7 +84,8 @@ static int mmc_queue_thread(void *d)
 				continue; /* fetch again */
 			} else if (test_bit(MMC_QUEUE_URGENT_REQUEST,
 					&mq->flags) && (mq->mqrq_cur->req &&
-					!(cmd_flags & MMC_REQ_NOREINSERT_MASK))) {
+					!(cmd_flags &
+						MMC_REQ_NOREINSERT_MASK))) {
 				/*
 				 * clean current request when urgent request
 				 * processing in progress and current request is
@@ -96,7 +99,13 @@ static int mmc_queue_thread(void *d)
 			/*
 			 * Current request becomes previous request
 			 * and vice versa.
+			 * In case of special requests, current request
+			 * has been finished. Do not assign it to previous
+			 * request.
 			 */
+			if (cmd_flags & MMC_REQ_SPECIAL_MASK)
+				mq->mqrq_cur->req = NULL;
+
 			mq->mqrq_prev->brq.mrq.data = NULL;
 			mq->mqrq_prev->req = NULL;
 			tmp = mq->mqrq_prev;
