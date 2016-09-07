@@ -772,7 +772,7 @@
 				qcom,op-fdbck = <0>;
 				qcom,default-state = "on";
 				qcom,max-current = <20>;
-				qcom,init-br = <1023>;
+				qcom,init-br = <512>;
 				somc-s1,br-power-save = <163>;
 				qcom,ctrl-delay-us = <0>;
 				qcom,boost-curr-lim = <3>;
