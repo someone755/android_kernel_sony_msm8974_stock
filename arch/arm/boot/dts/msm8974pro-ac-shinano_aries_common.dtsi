@@ -24,7 +24,7 @@
 		interrupts = <0 102 0>;
 		interrupt-names = "qup_err_intr";
 		qcom,i2c-bus-freq = <355000>;
-		qcom,i2c-src-freq = <50000000>;
+		qcom,i2c-src-freq = <19200000>;
 		qcom,scl-gpio = <&msmgpio 48 0x00>;
 		qcom,sda-gpio = <&msmgpio 47 0x00>;
 		qcom,master-id = <84>;
@@ -772,7 +772,7 @@
 				qcom,op-fdbck = <0>;
 				qcom,default-state = "on";
 				qcom,max-current = <20>;
-				qcom,init-br = <1023>;
+				qcom,init-br = <512>;
 				somc-s1,br-power-save = <163>;
 				qcom,ctrl-delay-us = <0>;
 				qcom,boost-curr-lim = <3>;
