@@ -215,9 +215,6 @@ static struct platform_device ram_console_device = {
 
 void __init msm_8974_reserve(void)
 {
-#if defined(CONFIG_RAMDUMP_TAGS) || defined(CONFIG_CRASH_LAST_LOGS)
-	reserve_debug_memory();
-#endif
 #ifdef CONFIG_KEXEC_HARDBOOT
 	// Reserve space for hardboot page - just after ram_console,
 	// at the start of second memory bank
@@ -237,6 +234,10 @@ void __init msm_8974_reserve(void)
 		pr_info("Hardboot page reserved at 0x%X\n", start);
 	else
 		pr_err("Failed to reserve space for hardboot page at 0x%X!\n", start);
+#endif
+
+#if defined(CONFIG_RAMDUMP_TAGS) || defined(CONFIG_CRASH_LAST_LOGS)
+	reserve_debug_memory();
 #endif
 
 #ifdef CONFIG_ANDROID_PERSISTENT_RAM

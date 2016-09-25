@@ -40,7 +40,7 @@
 #include <asm/sections.h>
 
 /* Per cpu memory for storing cpu states in case of system crash. */
-note_buf_t __percpu *crash_notes;
+note_buf_t __percpu *crash_notes_kexec;
 
 /* vmcoreinfo stuff */
 static unsigned char vmcoreinfo_data[VMCOREINFO_BYTES];
@@ -1222,7 +1222,7 @@ void crash_save_cpu(struct pt_regs *regs, int cpu)
 	 * squirrelled away.  ELF notes happen to provide
 	 * all of that, so there is no need to invent something new.
 	 */
-	buf = (u32*)per_cpu_ptr(crash_notes, cpu);
+	buf = (u32*)per_cpu_ptr(crash_notes_kexec, cpu);
 	if (!buf)
 		return;
 	memset(&prstatus, 0, sizeof(prstatus));
@@ -1236,8 +1236,8 @@ void crash_save_cpu(struct pt_regs *regs, int cpu)
 static int __init crash_notes_memory_init(void)
 {
 	/* Allocate memory for saving cpu registers. */
-	crash_notes = alloc_percpu(note_buf_t);
-	if (!crash_notes) {
+	crash_notes_kexec = alloc_percpu(note_buf_t);
+	if (!crash_notes_kexec) {
 		printk("Kexec: Memory allocation for saving cpu register"
 		" states failed\n");
 		return -ENOMEM;
